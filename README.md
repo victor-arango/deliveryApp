@@ -1,5 +1,4 @@
-# Flutter - Authenticated CRUD App - TesloShop
-
+# Flutter - Authenticated CRUD App 
 Este es un proyecto para trabajar con:
 
 * Cámara
