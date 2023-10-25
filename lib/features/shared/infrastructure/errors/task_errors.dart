@@ -1,0 +1,1 @@
+class CreateTaskError implements Exception {}
