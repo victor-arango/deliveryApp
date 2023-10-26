@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../providers/task_user_provider.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
@@ -48,11 +51,42 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 }
 
-class _ProductsView extends StatelessWidget {
+class _ProductsView extends ConsumerStatefulWidget {
   const _ProductsView();
 
   @override
+  _ProductsViewState createState() => _ProductsViewState();
+}
+
+class _ProductsViewState extends ConsumerState {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    ref.read(taskUSerProvider.notifier).loadTask();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Tareas!'));
+    final tasksState = ref.watch(taskUSerProvider);
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            itemCount: tasksState.tasksUser.length,
+            itemBuilder: (context, index) {
+              final task = tasksState.tasksUser[index];
+              return Text(task.descripcion);
+            }));
   }
 }

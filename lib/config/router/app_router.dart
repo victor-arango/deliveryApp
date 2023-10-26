@@ -73,10 +73,10 @@ final goRouterProvider = Provider((ref) {
             isGoingTo == '/register' ||
             isGoingTo == '/splash') {}
         if (user!.contains('admin')) {
-          if (isGoingTo == '/admin' || isGoingTo == '/form-task') {
+          if (isGoingTo == '/' || isGoingTo == '/form-task') {
             return null;
           }
-          return '/admin';
+          return '/';
         }
 
         if (user.contains('delivery')) {
