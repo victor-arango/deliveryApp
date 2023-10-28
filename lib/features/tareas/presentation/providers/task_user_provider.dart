@@ -6,39 +6,56 @@ import 'package:mensaeria_alv/features/tareas/presentation/providers/task_user_r
 //Provider
 
 final taskUSerProvider =
-    StateNotifierProvider<TaskUserNotifier, TaskUserState>((ref) {
+    StateNotifierProvider.autoDispose<TaskUserNotifier, TaskUserState>((ref) {
   final tasksUserRepository = ref.watch(taskUserRepositoyProvider);
 
   return TaskUserNotifier(taskUserRepository: tasksUserRepository);
 });
 
 //Notifier
-
 class TaskUserNotifier extends StateNotifier<TaskUserState> {
   final TaskUserRepository taskUserRepository;
 
   TaskUserNotifier({required this.taskUserRepository})
-      : super(TaskUserState()) {
+      : super(TaskUserState(status: 'ASIGNADO')) {
     loadTask();
   }
 
   Future loadTask() async {
-    if (state.isLoading || state.isLastPage) return;
+    if (state.status == 'ASIGNADO' && state.tasksUser.isEmpty) {
+      // Cargar tareas asignadas solo si no están cargadas
+      final tasks = await taskUserRepository.getTaskByIdAndStatus(
+          state.idUser, state.status);
 
-    state = state.copyWith(isLoading: true);
+      if (tasks.isEmpty) {
+        state = state.copyWith(isLoading: false, isLastPage: true);
+        return;
+      }
 
-    final tasks = await taskUserRepository.getTaskByIdAndStatus(
-        state.idUser, state.status);
+      state = state.copyWith(
+          isLastPage: false,
+          isLoading: false,
+          tasksUser: [...state.tasksUser, ...tasks]);
+    } else if (state.status == 'FINALIZADO' && state.tasksUserFin.isEmpty) {
+      // Cargar tareas finalizadas solo si no están cargadas
+      final tasks = await taskUserRepository.getTaskByIdAndStatus(
+          state.idUser, state.status);
 
-    if (tasks.isEmpty) {
-      state = state.copyWith(isLoading: false, isLastPage: true);
-      return;
+      if (tasks.isEmpty) {
+        state = state.copyWith(isLoading: false, isLastPage: true);
+        return;
+      }
+
+      state = state.copyWith(
+          isLastPage: false,
+          isLoading: false,
+          tasksUserFin: [...state.tasksUserFin, ...tasks]);
     }
+  }
 
-    state = state.copyWith(
-        isLastPage: false,
-        isLoading: false,
-        tasksUser: [...state.tasksUser, ...tasks]);
+  void changeTab(String status) {
+    state = state.copyWith(status: status);
+    loadTask(); // Cargar las tareas solo si no están cargadas
   }
 }
 
@@ -47,6 +64,7 @@ class TaskUserState {
   final bool isLastPage;
   final bool isLoading;
   final List<TaskUser> tasksUser;
+  final List<TaskUser> tasksUserFin;
   final int idUser;
   final String status;
 
@@ -54,14 +72,16 @@ class TaskUserState {
     this.isLastPage = false,
     this.isLoading = false,
     this.tasksUser = const [],
-    this.idUser = 9,
-    this.status = 'ASIGNADO',
+    this.tasksUserFin = const [],
+    this.idUser = 1,
+    this.status = 'FINALIZADO',
   });
 
   TaskUserState copyWith({
     bool? isLastPage = false,
     bool? isLoading = false,
     List<TaskUser>? tasksUser,
+    List<TaskUser>? tasksUserFin,
     int? idUser,
     String? status,
   }) =>
@@ -69,6 +89,7 @@ class TaskUserState {
         isLastPage: isLastPage ?? this.isLastPage,
         isLoading: isLoading ?? this.isLoading,
         tasksUser: tasksUser ?? this.tasksUser,
+        tasksUserFin: tasksUserFin ?? this.tasksUserFin,
         idUser: idUser ?? this.idUser,
         status: status ?? this.status,
       );

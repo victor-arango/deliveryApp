@@ -2,50 +2,87 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../providers/task_user_provider.dart';
+import 'widgets/task_card.dart';
 
-class TasksScreen extends StatefulWidget {
+class TasksScreen extends ConsumerStatefulWidget {
   const TasksScreen({super.key});
 
   @override
-  State<TasksScreen> createState() => _TasksScreenState();
+  TasksScreenState createState() => TasksScreenState();
 }
 
-class _TasksScreenState extends State<TasksScreen> {
-  late IO.Socket socket;
+class TasksScreenState extends ConsumerState<TasksScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    // socket = IO.io(
-    //     'http://192.168.1.7:3000',
-    //     IO.OptionBuilder()
-    //         .setTransports(['websocket'])
-    //         .disableAutoConnect()
-    //         .build());
-
-    // socket.connect();
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabChange);
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabChange);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabChange() {
+    final selectedTabIndex = _tabController.index;
+    final status = selectedTabIndex == 0 ? 'ASIGNADO' : 'FINALIZADO';
+    ref.read(taskUSerProvider.notifier).changeTab(status);
   }
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldKey = GlobalKey<ScaffoldState>();
-
-    return Scaffold(
-      drawer: SideMenu(scaffoldKey: scaffoldKey),
-      appBar: AppBar(
-        title: const Text('Tareas'),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded))
-        ],
-      ),
-      body: const _ProductsView(),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Nueva Tarea'),
-        icon: const Icon(Icons.add),
-        onPressed: () => context.push('/form-task'),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        drawer: SideMenu(scaffoldKey: scaffoldKey),
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: const Text('Tareas'),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded))
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(80),
+            child: Container(
+              margin: const EdgeInsets.only(top: 50),
+              child: TabBar(
+                unselectedLabelColor: Colors.grey[400],
+                indicator: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: Colors.black, width: 2.0)),
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(child: Text('ASIGNADO')),
+                  Tab(child: Text('FINALIZADO')),
+                ],
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            // Widget para las tareas pendientes
+            _ProductsView(),
+            // Widget para las tareas finalizadas
+            _TaskView()
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          label: const Text('Nueva Tarea'),
+          icon: const Icon(Icons.add),
+          onPressed: () => context.push('/form-task'),
+        ),
       ),
     );
   }
@@ -64,7 +101,8 @@ class _ProductsViewState extends ConsumerState {
   @override
   void initState() {
     // TODO: implement initState
-    ref.read(taskUSerProvider.notifier).loadTask();
+
+    // ref.read(taskUSerProvider.notifier).loadTask();
 
     super.initState();
   }
@@ -79,14 +117,64 @@ class _ProductsViewState extends ConsumerState {
   Widget build(BuildContext context) {
     final tasksState = ref.watch(taskUSerProvider);
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            itemCount: tasksState.tasksUser.length,
-            itemBuilder: (context, index) {
-              final task = tasksState.tasksUser[index];
-              return Text(task.descripcion);
-            }));
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: tasksState.tasksUser.isNotEmpty
+          ? ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              itemCount: tasksState.tasksUser.length,
+              itemBuilder: (context, index) {
+                final task = tasksState.tasksUser[index];
+                return TaskCard(taskUser: task);
+              })
+          : const Center(
+              child: Text("No hay tareas pendientes"),
+            ),
+    );
+  }
+}
+
+class _TaskView extends ConsumerStatefulWidget {
+  const _TaskView();
+
+  @override
+  _TaskViewState createState() => _TaskViewState();
+}
+
+class _TaskViewState extends ConsumerState {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // ref.read(taskUSerProvider.notifier).loadTask();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tasksState = ref.watch(taskUSerProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: tasksState.tasksUserFin.isNotEmpty
+          ? ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              itemCount: tasksState.tasksUserFin.length,
+              itemBuilder: (context, index) {
+                final task = tasksState.tasksUserFin[index];
+                return TaskCard(taskUser: task);
+              })
+          : const Center(
+              child: Text("No hay tareas pendientes"),
+            ),
+    );
   }
 }

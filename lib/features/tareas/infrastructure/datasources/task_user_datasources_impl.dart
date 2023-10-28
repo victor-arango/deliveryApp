@@ -22,12 +22,9 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
   Future<List<TaskUser>> getTaskByIdAndStatus(int userId, String status) async {
     final response =
         await dio.get<List>('/task/findByClientAndStatus/$userId/$status');
-    print(response.data);
     final List<TaskUser> tasks = [];
     for (final task in response.data ?? []) {
       tasks.add(TaskUserMapper.jsonToEntity(task));
-
-      print(task);
     }
     return tasks;
   }
