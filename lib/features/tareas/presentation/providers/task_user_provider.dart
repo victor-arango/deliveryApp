@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/tareas/domain/entities/task_user.dart';
 import 'package:mensaeria_alv/features/tareas/domain/repositories/task_user_repository.dart';
 import 'package:mensaeria_alv/features/tareas/presentation/providers/task_user_rpository_provider.dart';
@@ -8,16 +9,19 @@ import 'package:mensaeria_alv/features/tareas/presentation/providers/task_user_r
 final taskUSerProvider =
     StateNotifierProvider.autoDispose<TaskUserNotifier, TaskUserState>((ref) {
   final tasksUserRepository = ref.watch(taskUserRepositoyProvider);
+  final idUser = ref.watch(authProvider).user?.id ?? '';
+  final userId = int.parse(idUser);
 
-  return TaskUserNotifier(taskUserRepository: tasksUserRepository);
+  return TaskUserNotifier(
+      taskUserRepository: tasksUserRepository, userId: userId);
 });
 
 //Notifier
 class TaskUserNotifier extends StateNotifier<TaskUserState> {
   final TaskUserRepository taskUserRepository;
 
-  TaskUserNotifier({required this.taskUserRepository})
-      : super(TaskUserState(status: 'ASIGNADO')) {
+  TaskUserNotifier({required this.taskUserRepository, required int userId})
+      : super(TaskUserState(userId: userId, status: 'ASIGNADO')) {
     loadTask();
   }
 
@@ -25,7 +29,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     if (state.status == 'ASIGNADO' && state.tasksUser.isEmpty) {
       // Cargar tareas asignadas solo si no están cargadas
       final tasks = await taskUserRepository.getTaskByIdAndStatus(
-          state.idUser, state.status);
+          state.userId, state.status);
 
       if (tasks.isEmpty) {
         state = state.copyWith(isLoading: false, isLastPage: true);
@@ -39,7 +43,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     } else if (state.status == 'FINALIZADO' && state.tasksUserFin.isEmpty) {
       // Cargar tareas finalizadas solo si no están cargadas
       final tasks = await taskUserRepository.getTaskByIdAndStatus(
-          state.idUser, state.status);
+          state.userId, state.status);
 
       if (tasks.isEmpty) {
         state = state.copyWith(isLoading: false, isLastPage: true);
@@ -65,7 +69,7 @@ class TaskUserState {
   final bool isLoading;
   final List<TaskUser> tasksUser;
   final List<TaskUser> tasksUserFin;
-  final int idUser;
+  final int userId;
   final String status;
 
   TaskUserState({
@@ -73,7 +77,7 @@ class TaskUserState {
     this.isLoading = false,
     this.tasksUser = const [],
     this.tasksUserFin = const [],
-    this.idUser = 1,
+    required this.userId,
     this.status = 'FINALIZADO',
   });
 
@@ -82,7 +86,7 @@ class TaskUserState {
     bool? isLoading = false,
     List<TaskUser>? tasksUser,
     List<TaskUser>? tasksUserFin,
-    int? idUser,
+    int? userId,
     String? status,
   }) =>
       TaskUserState(
@@ -90,7 +94,7 @@ class TaskUserState {
         isLoading: isLoading ?? this.isLoading,
         tasksUser: tasksUser ?? this.tasksUser,
         tasksUserFin: tasksUserFin ?? this.tasksUserFin,
-        idUser: idUser ?? this.idUser,
+        userId: userId ?? this.userId,
         status: status ?? this.status,
       );
 }

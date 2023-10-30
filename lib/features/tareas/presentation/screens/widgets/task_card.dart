@@ -113,7 +113,8 @@ class TaskCard extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.centerRight,
-            child: IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+            child: IconButton(
+                onPressed: () {}, icon: const Icon(Icons.more_vert_outlined)),
           )
         ],
       ),
