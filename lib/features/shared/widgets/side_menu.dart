@@ -20,6 +20,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final userState = ref.watch(authProvider);
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final textStyles = Theme.of(context).textTheme;
 
@@ -42,7 +43,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 16, 10),
-            child: Text('Tony Stark', style: textStyles.titleSmall),
+            child: Text(userState.user!.fullname, style: textStyles.titleSmall),
           ),
           const NavigationDrawerDestination(
             icon: Icon(Icons.home_outlined),

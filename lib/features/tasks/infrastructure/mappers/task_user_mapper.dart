@@ -1,5 +1,5 @@
-import 'package:mensaeria_alv/features/tareas/domain/domain.dart';
-import 'package:mensaeria_alv/features/tareas/infrastructure/mappers/rating_mapper.dart';
+import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/infrastructure/mappers/rating_mapper.dart';
 
 // class TaskUserMapper {
 //   static jsonToEntity(Map<String, dynamic> json) => TaskUser(

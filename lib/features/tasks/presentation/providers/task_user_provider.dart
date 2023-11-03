@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
-import 'package:mensaeria_alv/features/tareas/domain/entities/task_user.dart';
-import 'package:mensaeria_alv/features/tareas/domain/repositories/task_user_repository.dart';
-import 'package:mensaeria_alv/features/tareas/presentation/providers/task_user_rpository_provider.dart';
+import 'package:mensaeria_alv/features/tasks/domain/entities/task_user.dart';
+import 'package:mensaeria_alv/features/tasks/domain/repositories/task_user_repository.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/providers/task_user_rpository_provider.dart';
 
 //Provider
 

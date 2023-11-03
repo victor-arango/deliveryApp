@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 
@@ -100,8 +101,6 @@ class _ProductsViewState extends ConsumerState {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     // ref.read(taskUSerProvider.notifier).loadTask();
 
     super.initState();
@@ -118,18 +117,20 @@ class _ProductsViewState extends ConsumerState {
     final tasksState = ref.watch(taskUSerProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: tasksState.tasksUser.isNotEmpty
-          ? ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              itemCount: tasksState.tasksUser.length,
-              itemBuilder: (context, index) {
-                final task = tasksState.tasksUser[index];
-                return TaskCard(taskUser: task);
-              })
-          : const Center(
-              child: Text("No hay tareas pendientes"),
-            ),
+      child: MasonryGridView.count(
+        controller: scrollController,
+        physics: const BouncingScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 35,
+        itemCount: tasksState.tasksUser.length,
+        itemBuilder: (context, index) {
+          final task = tasksState.tasksUser[index];
+          return GestureDetector(
+              onTap: () => context.push('/product/${task.id}'),
+              child: TaskCard(taskUser: task));
+        },
+      ),
     );
   }
 }
@@ -146,7 +147,6 @@ class _TaskViewState extends ConsumerState {
 
   @override
   void initState() {
-    // TODO: implement initState
     // ref.read(taskUSerProvider.notifier).loadTask();
 
     super.initState();
@@ -163,18 +163,20 @@ class _TaskViewState extends ConsumerState {
     final tasksState = ref.watch(taskUSerProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: tasksState.tasksUserFin.isNotEmpty
-          ? ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              itemCount: tasksState.tasksUserFin.length,
-              itemBuilder: (context, index) {
-                final task = tasksState.tasksUserFin[index];
-                return TaskCard(taskUser: task);
-              })
-          : const Center(
-              child: Text("No hay tareas pendientes"),
-            ),
+      child: MasonryGridView.count(
+        controller: scrollController,
+        physics: const BouncingScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 35,
+        itemCount: tasksState.tasksUserFin.length,
+        itemBuilder: (context, index) {
+          final task = tasksState.tasksUserFin[index];
+          return GestureDetector(
+              onTap: () => context.push('/task/${task.id}'),
+              child: TaskCard(taskUser: task));
+        },
+      ),
     );
   }
 }

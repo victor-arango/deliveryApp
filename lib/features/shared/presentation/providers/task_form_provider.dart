@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:mensaeria_alv/features/shared/infrastructure/services/key_value_storage_service.dart';
 import 'package:mensaeria_alv/features/shared/infrastructure/services/key_value_storage_service_impl.dart';
-import 'package:mensaeria_alv/features/shared/presentation/providers/task_provider.dart';
+import 'package:mensaeria_alv/features/shared/presentation/providers/task_list_provider.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 
 //! 3 - StateNotifierProvider - consume afuera

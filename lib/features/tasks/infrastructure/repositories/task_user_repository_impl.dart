@@ -1,4 +1,4 @@
-import 'package:mensaeria_alv/features/tareas/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
 
 class TaskUserRepositoryImpl extends TaskUserRepository {
   final TaskUserDatasource datasource;

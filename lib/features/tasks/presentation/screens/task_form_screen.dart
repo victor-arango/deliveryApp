@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/presentation/providers/deliverys_provider.dart';
 import 'package:mensaeria_alv/features/shared/presentation/providers/task_form_provider.dart';
-import 'package:mensaeria_alv/features/shared/presentation/providers/task_provider.dart';
+import 'package:mensaeria_alv/features/shared/presentation/providers/task_list_provider.dart';
 
 import '../../../shared/widgets/widgets.dart';
 

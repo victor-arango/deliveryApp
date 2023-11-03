@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:mensaeria_alv/config/constants/environment.dart';
-import 'package:mensaeria_alv/features/tareas/domain/domain.dart';
-import 'package:mensaeria_alv/features/tareas/infrastructure/mappers/task_user_mapper.dart';
+import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/infrastructure/mappers/task_user_mapper.dart';
+
+import '../errors/task_errors.dart';
 
 class TaskUserDatasourceImpl extends TaskUserDatasource {
   late final Dio dio;
@@ -13,9 +15,17 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
             headers: {'Authorization': 'Bearer $accestoken'}));
 
   @override
-  Future<TaskUser> getTaskById(String id) {
-    // TODO: implement getTaskById
-    throw UnimplementedError();
+  Future<TaskUser> getTaskById(String id) async {
+    try {
+      final response = await dio.get('/task/findTaskById/$id');
+      final task = TaskUserMapper.jsonToEntity(response.data);
+      return task;
+    } on DioException catch (e) {
+      if (e.response!.statusCode == 404) throw TaskNotFound();
+      throw Exception();
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override

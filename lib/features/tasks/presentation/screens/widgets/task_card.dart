@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mensaeria_alv/features/tareas/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskUser taskUser;
