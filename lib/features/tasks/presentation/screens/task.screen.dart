@@ -2,13 +2,12 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.dart';
 
 import '../../../shared/presentation/providers/providers.dart';
 import '../../../shared/presentation/providers/task_form_provider.dart';
-import '../providers/task_provider.dart';
 
 class TaskScreen extends ConsumerWidget {
   final String taskId;
@@ -23,7 +22,7 @@ class TaskScreen extends ConsumerWidget {
       ),
       body: taskState.isLoading
           ? const FullScreenLoader()
-          : _ProductView(product: taskState.task!),
+          : _ProductView(task: taskState.task!),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.save_as_outlined),
@@ -32,15 +31,14 @@ class TaskScreen extends ConsumerWidget {
   }
 }
 
-class _ProductView extends StatelessWidget {
-  final TaskUser product;
+class _ProductView extends ConsumerWidget {
+  final TaskUser task;
 
-  const _ProductView({required this.product});
+  const _ProductView({required this.task});
 
   @override
-  Widget build(BuildContext context) {
-    final textStyles = Theme.of(context).textTheme;
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final taskForm = ref.watch(formTaskProvider(task));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: ListView(
@@ -48,12 +46,11 @@ class _ProductView extends StatelessWidget {
           const SizedBox(
             height: 250,
             width: 600,
-            // child: _ImageGallery(images: product.images),
           ),
           const SizedBox(height: 10),
-          // Center(child: Text(product.title, style: textStyles.titleSmall)),
+          // Center(child: Text(task.title, style: textStyles.titleSmall)),
           const SizedBox(height: 10),
-          _ProductInformation(product: product),
+          _ProductInformation(task: task),
         ],
       ),
     );
@@ -61,21 +58,19 @@ class _ProductView extends StatelessWidget {
 }
 
 class _ProductInformation extends ConsumerWidget {
-  final TaskUser product;
-  const _ProductInformation({required this.product});
+  final TaskUser task;
+  const _ProductInformation({required this.task});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(deliverysProvider.notifier).loadDelivery();
-    final taskForm = ref.watch(taskFormProvider);
+    final taskForm = ref.watch(formTaskProvider(task));
 
     // ref.listen(taskProvider, (previous, next) {
     //   if (next.errorMessage.isEmpty) return;
     //   showSnackbar(context, next.errorMessage);
     // });
-    final parsearFecha = DateTime.parse(product.timestamp);
-    print(parsearFecha);
-    // final formatoFecha = DateFormat('MMMM dd, yyyy').format(parsearFecha);
+    final parsearFecha = DateTime.parse(taskForm.timestamp.value);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -86,13 +81,23 @@ class _ProductInformation extends ConsumerWidget {
             maxLines: 5,
             label: 'Descripción',
             keyboardType: TextInputType.multiline,
-            initialValue: product.descripcion,
+            initialValue: taskForm.description.value,
+            onChanged:
+                ref.read(formTaskProvider(task).notifier).onDescriptionChanged,
           ),
           const SizedBox(height: 15),
-          WidgetDate(dateTime: parsearFecha),
+          WidgetDate(
+            task: task,
+          ),
           const SizedBox(height: 15),
-          _DropdownDelivery(selectedDeliveryId: product.deliveryId),
-          _DropdownPriority(selectedPrority: product.priority),
+          _DropdownDelivery(
+            selectedDeliveryId: taskForm.deliveryId.value.toString(),
+            task: task,
+          ),
+          _DropdownPriority(
+            selectedPrority: taskForm.priority.value,
+            task: task,
+          ),
           const SizedBox(height: 100),
         ],
       ),
@@ -100,23 +105,26 @@ class _ProductInformation extends ConsumerWidget {
   }
 }
 
-class WidgetDate extends StatelessWidget {
-  final DateTime dateTime;
-  const WidgetDate({super.key, required this.dateTime});
+class WidgetDate extends ConsumerWidget {
+  final TaskUser task;
+
+  const WidgetDate({super.key, required this.task});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final taskForm = ref.watch(formTaskProvider(task));
+    final parsearFecha = DateTime.parse(taskForm.timestamp.value);
+
     return EasyDateTimeLine(
       locale: 'es',
-      initialDate: dateTime,
-      // onDateChange: (selectedDate) {
-      //   ref
-      //       .watch(taskFormProvider.notifier)
-      //       .onDropdownDateChange(selectedDate.toString());
-      // },
+      initialDate: parsearFecha,
+      onDateChange: (selectedDate) {
+        ref
+            .watch(formTaskProvider(task).notifier)
+            .onDropDateChanged(selectedDate.toString());
+      },
       dayProps: const EasyDayProps(
         height: 56.0,
-        // You must specify the width in this case.
         width: 124.0,
       ),
       headerProps: const EasyHeaderProps(
@@ -173,12 +181,12 @@ class WidgetDate extends StatelessWidget {
 
 class _DropdownDelivery extends ConsumerWidget {
   final String? selectedDeliveryId;
-  const _DropdownDelivery({this.selectedDeliveryId});
+  final TaskUser task;
+  const _DropdownDelivery({this.selectedDeliveryId, required this.task});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deliverysState = ref.watch(deliverysProvider);
-    // final taskForm = ref.watch(taskFormProvider);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -209,8 +217,8 @@ class _DropdownDelivery extends ConsumerWidget {
           value: selectedDeliveryId,
           onChanged: (value) {
             ref
-                .read(taskFormProvider.notifier)
-                .onDropdownChange(int.parse(value!));
+                .watch(formTaskProvider(task).notifier)
+                .onDropdownChanged(int.parse(value.toString()));
           },
           buttonStyleData: ButtonStyleData(
               height: 50,
@@ -253,7 +261,8 @@ class _DropdownDelivery extends ConsumerWidget {
 
 class _DropdownPriority extends ConsumerWidget {
   final String? selectedPrority;
-  _DropdownPriority({this.selectedPrority});
+  final TaskUser task;
+  _DropdownPriority({this.selectedPrority, required this.task});
 
   final List<String> selectedPriority = ["Alta", "Media", "Baja"];
   final List<IconData> priorityIcons = [
@@ -264,7 +273,7 @@ class _DropdownPriority extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final taskForm = ref.watch(taskFormProvider);
+    final taskForm = ref.watch(taskFormProvider);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -308,8 +317,8 @@ class _DropdownPriority extends ConsumerWidget {
           value: selectedPrority,
           onChanged: (value) {
             ref
-                .read(taskFormProvider.notifier)
-                .onDropdownPriorityChange(value.toString());
+                .watch(formTaskProvider(task).notifier)
+                .onDropdownPriorityChanged(value.toString());
           },
           buttonStyleData: ButtonStyleData(
               height: 50,
