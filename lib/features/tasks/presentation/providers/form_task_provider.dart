@@ -2,16 +2,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:mensaeria_alv/features/shared/infrastructure/inputs/inputs.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.dart';
 
 //PROVIDER
 
 final formTaskProvider = StateNotifierProvider.autoDispose
     .family<FormTaskNotifier, FormTaskState, TaskUser>((ref, task) {
-  return FormTaskNotifier(task: task);
+  // final updateCallback = ref.watch(taskUserRepositoyProvider).updateTask;
+  final updateCallback = ref.watch(taskUSerProvider.notifier).updateTask;
+
+  return FormTaskNotifier(
+    task: task,
+    onSubmitCallback: updateCallback,
+  );
 });
 
 class FormTaskNotifier extends StateNotifier<FormTaskState> {
-  final void Function(Map<String, dynamic> taskLike)? onSubmitCallback;
+  final Future<bool> Function(Map<String, dynamic> taskLike)? onSubmitCallback;
 
   FormTaskNotifier({
     this.onSubmitCallback,
@@ -32,15 +39,17 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
 
     final taskLike = {
       'id': state.id,
-      'description': state.description.value,
+      'descripcion': state.description.value,
       'timestamp': state.timestamp.value,
-      'deliveryId': state.deliveryId.value,
+      'delivery_id': state.deliveryId.value,
       'priority': state.priority.value,
     };
 
-    return true;
-
-    //TODO: Llamar onsubmitCallback
+    try {
+      return await onSubmitCallback!(taskLike);
+    } catch (e) {
+      return false;
+    }
   }
 
   void _touchedEveryThing() {

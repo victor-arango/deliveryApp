@@ -18,6 +18,8 @@ class TaskUser {
     required this.priority,
     required this.ratings,
   });
+
+  map(Function(dynamic element) param0) {}
 }
 
 class Ratings {

@@ -7,7 +7,7 @@ import 'package:mensaeria_alv/features/tasks/presentation/providers/task_user_rp
 //Provider
 
 final taskUSerProvider =
-    StateNotifierProvider.autoDispose<TaskUserNotifier, TaskUserState>((ref) {
+    StateNotifierProvider<TaskUserNotifier, TaskUserState>((ref) {
   final tasksUserRepository = ref.watch(taskUserRepositoyProvider);
   final idUser = ref.watch(authProvider).user?.id ?? '';
   final userId = int.parse(idUser);
@@ -60,6 +60,32 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
   void changeTab(String status) {
     state = state.copyWith(status: status);
     loadTask(); // Cargar las tareas solo si no están cargadas
+  }
+
+  Future<bool> updateTask(Map<String, dynamic> taskLike) async {
+    try {
+      final task = await taskUserRepository.updateTask(taskLike);
+
+      if (state.status == 'FINALIZADO') {
+        state = state.copyWith(
+            tasksUser: state.tasksUser
+                .map(
+                  (element) => (element.id == task.id) ? task : element,
+                )
+                .toList());
+        return true;
+      } else {
+        state = state.copyWith(
+            tasksUserFin: state.tasksUserFin
+                .map(
+                  (element) => (element.id == task.id) ? task : element,
+                )
+                .toList());
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }
 

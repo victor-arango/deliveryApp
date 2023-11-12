@@ -16,6 +16,7 @@ class TaskScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskState = ref.watch(taskViewProvider(taskId));
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Editar tarea')),
@@ -24,7 +25,11 @@ class TaskScreen extends ConsumerWidget {
           ? const FullScreenLoader()
           : _ProductView(task: taskState.task!),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          if (taskState.task == null) return;
+
+          ref.read(formTaskProvider(taskState.task!).notifier).onFormSubmit();
+        },
         child: const Icon(Icons.save_as_outlined),
       ),
     );
@@ -82,8 +87,10 @@ class _ProductInformation extends ConsumerWidget {
             label: 'Descripción',
             keyboardType: TextInputType.multiline,
             initialValue: taskForm.description.value,
-            onChanged:
-                ref.read(formTaskProvider(task).notifier).onDescriptionChanged,
+            errorMessage: taskForm.description.errorMessage,
+            onChanged: (value) => ref
+                .read(formTaskProvider(task).notifier)
+                .onDescriptionChanged(value),
           ),
           const SizedBox(height: 15),
           WidgetDate(
@@ -187,16 +194,17 @@ class _DropdownDelivery extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deliverysState = ref.watch(deliverysProvider);
+    final taskForm = ref.watch(formTaskProvider(task));
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         DropdownButtonFormField2<String>(
           isExpanded: true,
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 16),
-            // errorText: taskForm.dropdown.errorMessage,
-            border: OutlineInputBorder(borderSide: BorderSide.none),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            errorText: taskForm.deliveryId.errorMessage,
+            border: const OutlineInputBorder(borderSide: BorderSide.none),
           ),
           hint: const Text('Selecciona el mensajero',
               style: TextStyle(
@@ -280,10 +288,10 @@ class _DropdownPriority extends ConsumerWidget {
       children: <Widget>[
         DropdownButtonFormField2<String>(
           isExpanded: true,
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 16),
-            // errorText: taskForm.dropdowPriority.errorMessage,
-            border: OutlineInputBorder(borderSide: BorderSide.none),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            errorText: taskForm.dropdowPriority.errorMessage,
+            border: const OutlineInputBorder(borderSide: BorderSide.none),
           ),
           hint: const Text('Selecciona la prioridad',
               style: TextStyle(

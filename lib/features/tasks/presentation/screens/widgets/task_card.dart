@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:intl/intl.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskUser taskUser;
@@ -7,6 +8,17 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String fechaString = taskUser.timestamp;
+
+    // Parsear la fecha a un objeto DateTime
+    DateTime fecha = DateTime.parse(fechaString);
+
+    // Crear un formateador de fecha para el formato deseado (día, mes y año)
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+
+    // Formatear la fecha en el formato deseado
+    String fechaFormateada = dateFormat.format(fecha);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       width: double.infinity,
@@ -97,7 +109,7 @@ class TaskCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    taskUser.timestamp,
+                    fechaFormateada,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Color(0xFF555555),

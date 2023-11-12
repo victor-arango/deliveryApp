@@ -54,7 +54,7 @@ class TasksScreenState extends ConsumerState<TasksScreen>
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(80),
             child: Container(
-              margin: const EdgeInsets.only(top: 50),
+              margin: const EdgeInsets.only(top: 50, bottom: 25),
               child: TabBar(
                 unselectedLabelColor: Colors.grey[400],
                 indicator: const BoxDecoration(
@@ -101,8 +101,6 @@ class _ProductsViewState extends ConsumerState {
 
   @override
   void initState() {
-    // ref.read(taskUSerProvider.notifier).loadTask();
-
     super.initState();
   }
 
@@ -147,8 +145,6 @@ class _TaskViewState extends ConsumerState {
 
   @override
   void initState() {
-    // ref.read(taskUSerProvider.notifier).loadTask();
-
     super.initState();
   }
 

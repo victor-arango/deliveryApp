@@ -40,8 +40,14 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
   }
 
   @override
-  Future<TaskUser> updateTask(Map<String, dynamic> taskLike) {
-    // TODO: implement updateTask
-    throw UnimplementedError();
+  Future<TaskUser> updateTask(Map<String, dynamic> taskLike) async {
+    final String taskId = taskLike['id'];
+    try {
+      final response = await dio.patch('/task/$taskId', data: taskLike);
+      final task = TaskUserMapper.jsonToEntity(response.data['data']);
+      return task;
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
