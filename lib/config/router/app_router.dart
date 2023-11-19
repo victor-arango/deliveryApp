@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/config/router/app_router_notifier.dart';
-import 'package:mensaeria_alv/features/admin/presentation/screens/admin_screen.dart';
 import 'package:mensaeria_alv/features/auth/auth.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/delivery/presentation/screens/delivery_screen.dart';
@@ -40,7 +39,7 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const CreateTaskScreen(),
       ),
       GoRoute(
-        path: '/product/:id', // /product/new
+        path: '/task/:id', // /product/new
         builder: (context, state) => TaskScreen(
           taskId: state.params['id'] ?? 'no-id',
         ),
@@ -52,12 +51,15 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const DeliveryScreen(),
       ),
     ],
-    redirect: (context, state) {
+    redirect: (context, state) async {
       final isGoingTo = state.subloc;
       final authStatus = goRouterNotifier.authStatus;
 
-      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking)
+      final user = goRouterNotifier.user?.roles;
+
+      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
         return null;
+      }
 
       if (authStatus == AuthStatus.notAuthenticated) {
         if (isGoingTo == '/login' || isGoingTo == '/register') return null;
@@ -68,57 +70,31 @@ final goRouterProvider = Provider((ref) {
       if (authStatus == AuthStatus.authenticated) {
         if (isGoingTo == '/login' ||
             isGoingTo == '/register' ||
-            isGoingTo == '/splash') {
+            isGoingTo == '/splash') {}
+        if (user!.contains('admin')) {
+          if (isGoingTo == '/' ||
+              isGoingTo == '/form-task' ||
+              isGoingTo.contains('/task/')) {
+            return null;
+          }
           return '/';
+        }
+
+        if (user.contains('delivery')) {
+          if (isGoingTo == '/delivery') {
+            return null;
+          }
+          return '/delivery';
+        }
+
+        if (isGoingTo == '/' ||
+            isGoingTo == '/form-task' ||
+            isGoingTo.contains('/task/')) {
+          return null;
         }
       }
 
-      return null;
+      return '/';
     },
-    // redirect: (context, state) async {
-    //   final isGoingTo = state.subloc;
-    //   final authStatus = goRouterNotifier.authStatus;
-
-    //   final user = goRouterNotifier.user?.roles;
-
-    //   if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
-    //     return null;
-    //   }
-
-    //   if (authStatus == AuthStatus.notAuthenticated) {
-    //     if (isGoingTo == '/login' || isGoingTo == '/register') return null;
-
-    //     return '/login';
-    //   }
-
-    //   if (authStatus == AuthStatus.authenticated) {
-    //     if (isGoingTo == '/login' ||
-    //         isGoingTo == '/register' ||
-    //         isGoingTo == '/splash') {}
-    //     if (user!.contains('admin')) {
-    //       if (isGoingTo == '/' ||
-    //           isGoingTo == '/form-task' ||
-    //           isGoingTo == '/task/:id') {
-    //         return null;
-    //       }
-    //       return '/';
-    //     }
-
-    //     if (user.contains('delivery')) {
-    //       if (isGoingTo == '/delivery') {
-    //         return null;
-    //       }
-    //       return '/delivery';
-    //     }
-
-    //     if (isGoingTo == '/' ||
-    //         isGoingTo == '/form-task' ||
-    //         isGoingTo == '/task/:id') {
-    //       return null;
-    //     }
-    //   }
-
-    //   return '/';
-    // },
   );
 });

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
-import 'package:mensaeria_alv/features/shared/infrastructure/inputs/confirm_password.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 
 final registerFormProvider =

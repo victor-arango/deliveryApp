@@ -8,8 +8,8 @@ import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.da
 
 final formTaskProvider = StateNotifierProvider.autoDispose
     .family<FormTaskNotifier, FormTaskState, TaskUser>((ref, task) {
-  // final updateCallback = ref.watch(taskUserRepositoyProvider).updateTask;
-  final updateCallback = ref.watch(taskUSerProvider.notifier).updateTask;
+  final updateCallback =
+      ref.watch(taskUSerProvider.notifier).createOrUpdateProduct;
 
   return FormTaskNotifier(
     task: task,
@@ -45,9 +45,13 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
       'priority': state.priority.value,
     };
 
+    print(taskLike);
+
     try {
+      print('Actualizo');
       return await onSubmitCallback!(taskLike);
     } catch (e) {
+      print('Errore no controlado');
       return false;
     }
   }

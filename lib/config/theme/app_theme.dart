@@ -9,6 +9,7 @@ class AppTheme {
 
       ///* General
       useMaterial3: true,
+      // brightness: Brightness.dark,
       colorSchemeSeed: colorSeed,
 
       ///* Texts

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/screens/task_view_screen.dart';
 
 import '../providers/task_user_provider.dart';
 import 'widgets/task_card.dart';
@@ -16,28 +18,24 @@ class TasksScreen extends ConsumerStatefulWidget {
 
 class TasksScreenState extends ConsumerState<TasksScreen>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_handleTabChange);
+    setState(() {});
   }
 
-  @override
-  void dispose() {
-    _tabController.removeListener(_handleTabChange);
-    _tabController.dispose();
-    super.dispose();
+  void refresh() {
+    setState(() {});
   }
 
-  void _handleTabChange() {
-    final selectedTabIndex = _tabController.index;
-    final status = selectedTabIndex == 0 ? 'ASIGNADO' : 'FINALIZADO';
-    ref.read(taskUSerProvider.notifier).changeTab(status);
-  }
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
+  static List<Widget> _widgetOptions = <Widget>[
+    _ProductsView(),
+    TaskViewFinish()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -53,32 +51,41 @@ class TasksScreenState extends ConsumerState<TasksScreen>
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(80),
-            child: Container(
-              margin: const EdgeInsets.only(top: 50, bottom: 25),
-              child: TabBar(
-                unselectedLabelColor: Colors.grey[400],
-                indicator: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Colors.black, width: 2.0)),
+            child: GNav(
+              mainAxisAlignment: MainAxisAlignment.center,
+              haptic: true,
+              tabBorderRadius: 15,
+              tabActiveBorder: Border.all(color: Colors.black, width: 1),
+              tabBorder: Border.all(color: Colors.grey, width: 1),
+              tabMargin:
+                  const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+              curve: Curves.easeInOutCirc,
+              duration: const Duration(milliseconds: 300),
+              gap: 8,
+              activeColor: Colors.white,
+              iconSize: 24,
+              tabBackgroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              tabs: const [
+                GButton(
+                  icon: Icons.warning,
+                  text: 'Asignado',
                 ),
-                controller: _tabController,
-                tabs: const [
-                  Tab(child: Text('ASIGNADO')),
-                  Tab(child: Text('FINALIZADO')),
-                ],
-              ),
+                GButton(
+                  icon: Icons.check,
+                  text: 'Finalizado',
+                )
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
             ),
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: const [
-            // Widget para las tareas pendientes
-            _ProductsView(),
-            // Widget para las tareas finalizadas
-            _TaskView()
-          ],
-        ),
+        body: _widgetOptions.elementAt(_selectedIndex),
         floatingActionButton: FloatingActionButton.extended(
           label: const Text('Nueva Tarea'),
           icon: const Icon(Icons.add),
@@ -124,50 +131,6 @@ class _ProductsViewState extends ConsumerState {
         itemCount: tasksState.tasksUser.length,
         itemBuilder: (context, index) {
           final task = tasksState.tasksUser[index];
-          return GestureDetector(
-              onTap: () => context.push('/product/${task.id}'),
-              child: TaskCard(taskUser: task));
-        },
-      ),
-    );
-  }
-}
-
-class _TaskView extends ConsumerStatefulWidget {
-  const _TaskView();
-
-  @override
-  _TaskViewState createState() => _TaskViewState();
-}
-
-class _TaskViewState extends ConsumerState {
-  final ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final tasksState = ref.watch(taskUSerProvider);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: MasonryGridView.count(
-        controller: scrollController,
-        physics: const BouncingScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 35,
-        itemCount: tasksState.tasksUserFin.length,
-        itemBuilder: (context, index) {
-          final task = tasksState.tasksUserFin[index];
           return GestureDetector(
               onTap: () => context.push('/task/${task.id}'),
               child: TaskCard(taskUser: task));

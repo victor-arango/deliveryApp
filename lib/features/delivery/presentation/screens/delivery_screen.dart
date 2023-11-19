@@ -17,11 +17,6 @@ class DeliveryScreen extends StatelessWidget {
         ],
       ),
       body: const _ProductsView(),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Nueva Tarea'),
-        icon: const Icon(Icons.add),
-        onPressed: () {},
-      ),
     );
   }
 }

@@ -5,13 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.dart';
-
 import '../../../shared/presentation/providers/providers.dart';
 import '../../../shared/presentation/providers/task_form_provider.dart';
 
 class TaskScreen extends ConsumerWidget {
   final String taskId;
   const TaskScreen({super.key, required this.taskId});
+
+  void showSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Tarea Actualizada')));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +48,6 @@ class _ProductView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskForm = ref.watch(formTaskProvider(task));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: ListView(
@@ -53,7 +57,6 @@ class _ProductView extends ConsumerWidget {
             width: 600,
           ),
           const SizedBox(height: 10),
-          // Center(child: Text(task.title, style: textStyles.titleSmall)),
           const SizedBox(height: 10),
           _ProductInformation(task: task),
         ],
@@ -70,13 +73,6 @@ class _ProductInformation extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(deliverysProvider.notifier).loadDelivery();
     final taskForm = ref.watch(formTaskProvider(task));
-
-    // ref.listen(taskProvider, (previous, next) {
-    //   if (next.errorMessage.isEmpty) return;
-    //   showSnackbar(context, next.errorMessage);
-    // });
-    final parsearFecha = DateTime.parse(taskForm.timestamp.value);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -114,7 +110,6 @@ class _ProductInformation extends ConsumerWidget {
 
 class WidgetDate extends ConsumerWidget {
   final TaskUser task;
-
   const WidgetDate({super.key, required this.task});
 
   @override

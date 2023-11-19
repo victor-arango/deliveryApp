@@ -6,7 +6,7 @@ import 'package:mensaeria_alv/features/tasks/presentation/providers/task_user_rp
 
 //Provider
 
-final taskUSerProvider =
+final taskUSerFinishProvider =
     StateNotifierProvider<TaskUserNotifier, TaskUserState>((ref) {
   final tasksUserRepository = ref.watch(taskUserRepositoyProvider);
   final idUser = ref.watch(authProvider).user?.id ?? '';
@@ -21,7 +21,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
   final TaskUserRepository taskUserRepository;
 
   TaskUserNotifier({required this.taskUserRepository, required int userId})
-      : super(TaskUserState(userId: userId, status: 'ASIGNADO')) {
+      : super(TaskUserState(userId: userId, status: 'FINALIZADO')) {
     loadTask();
   }
 
@@ -29,15 +29,15 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     try {
       final task = await taskUserRepository.updateTask(taskLike);
       final isTaskInList =
-          state.tasksUser.any((element) => element.id == task.id);
+          state.tasksUserFin.any((element) => element.id == task.id);
 
       if (!isTaskInList) {
-        state = state.copyWith(tasksUser: [...state.tasksUser, task]);
+        state = state.copyWith(tasksUserFin: [...state.tasksUserFin, task]);
         return true;
       }
 
       state = state.copyWith(
-          tasksUser: state.tasksUser
+          tasksUserFin: state.tasksUserFin
               .map(
                 (element) => (element.id == task.id) ? task : element,
               )
@@ -64,7 +64,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     state = state.copyWith(
         isLastPage: false,
         isLoading: false,
-        tasksUser: [...state.tasksUser, ...tasks]);
+        tasksUserFin: [...state.tasksUserFin, ...tasks]);
   }
 }
 
@@ -72,29 +72,29 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
 class TaskUserState {
   final bool isLastPage;
   final bool isLoading;
-  final List<TaskUser> tasksUser;
+  final List<TaskUser> tasksUserFin;
   final int userId;
   final String status;
 
   TaskUserState({
     this.isLastPage = false,
     this.isLoading = false,
-    this.tasksUser = const [],
+    this.tasksUserFin = const [],
     required this.userId,
     this.status = 'FINALIZADO',
   });
 
   TaskUserState copyWith({
-    bool? isLastPage,
-    bool? isLoading,
-    List<TaskUser>? tasksUser,
+    bool? isLastPage = false,
+    bool? isLoading = false,
+    List<TaskUser>? tasksUserFin,
     int? userId,
     String? status,
   }) =>
       TaskUserState(
         isLastPage: isLastPage ?? this.isLastPage,
         isLoading: isLoading ?? this.isLoading,
-        tasksUser: tasksUser ?? this.tasksUser,
+        tasksUserFin: tasksUserFin ?? this.tasksUserFin,
         userId: userId ?? this.userId,
         status: status ?? this.status,
       );

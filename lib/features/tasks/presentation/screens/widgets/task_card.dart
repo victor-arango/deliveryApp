@@ -20,7 +20,7 @@ class TaskCard extends StatelessWidget {
     String fechaFormateada = dateFormat.format(fecha);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 5),
       width: double.infinity,
       height: 97.87,
       decoration: ShapeDecoration(
@@ -32,7 +32,7 @@ class TaskCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            margin: const EdgeInsets.only(left: 15),
+            margin: const EdgeInsets.only(left: 8),
             width: 52,
             height: 90,
             child: Row(
@@ -41,20 +41,22 @@ class TaskCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 48,
-                  height: 48,
+                  width: 52,
+                  height: 52,
                   child: Stack(
                     children: [
                       Positioned(
                         left: 0,
                         top: 0,
                         child: Container(
-                          width: 48,
-                          height: 48,
+                          width: 52,
+                          height: 52,
                           decoration: ShapeDecoration(
                             gradient:
                                 getGradientColorForPriority(taskUser.priority),
-                            shape: const OvalBorder(),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                           ),
                         ),
                       ),
@@ -87,16 +89,6 @@ class TaskCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    taskUser.userId,
-                    style: const TextStyle(
-                      color: Color(0xFF222222),
-                      fontSize: 16,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                      height: 0.09,
-                    ),
-                  ),
                   Text(
                     taskUser.descripcion,
                     style: const TextStyle(
@@ -137,15 +129,15 @@ class TaskCard extends StatelessWidget {
 LinearGradient getGradientColorForPriority(String priority) {
   if (priority == 'Alta') {
     return const LinearGradient(
-      colors: <Color>[Color(0xffFE1157), Color(0xffff809d)],
+      colors: <Color>[Color(0xffFE1157), Color(0xffFE1157)],
     );
   } else if (priority == 'Media') {
     return const LinearGradient(
-      colors: <Color>[Color(0xffFF9234), Color(0xffFFCD3C)],
+      colors: <Color>[Color(0xffFF9234), Color(0xffFF9234)],
     );
   } else if (priority == 'Baja') {
     return const LinearGradient(
-      colors: <Color>[Color(0xff1E2A78), Color(0xff49BCF6)],
+      colors: <Color>[Color(0xff1E2A78), Color(0xff1E2A78)],
     );
   }
 
