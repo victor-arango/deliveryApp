@@ -18,108 +18,100 @@ class TaskCard extends StatelessWidget {
 
     // Formatear la fecha en el formato deseado
     String fechaFormateada = dateFormat.format(fecha);
-
     return Container(
-      margin: const EdgeInsets.only(bottom: 5),
-      width: double.infinity,
-      height: 97.87,
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      height: 200,
       decoration: ShapeDecoration(
-        color: const Color(0xFFFCFCFC),
+        color: const Color.fromARGB(255, 255, 255, 255),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
       ),
-      child: Row(
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            margin: const EdgeInsets.only(left: 8),
-            width: 52,
-            height: 90,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 52,
-                  height: 52,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 52,
-                          height: 52,
-                          decoration: ShapeDecoration(
-                            gradient:
-                                getGradientColorForPriority(taskUser.priority),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Prioridad'),
+              SizedBox(
+                width: 52,
+                height: 20,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 52,
+                        height: 20,
+                        decoration: ShapeDecoration(
+                          gradient:
+                              getGradientColorForPriority(taskUser.priority),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                       ),
-                      Center(
-                        child: Text(
-                          taskUser.priority,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFFFCFCFC),
-                            fontSize: 15,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w700,
-                            height: 0.04,
-                            letterSpacing: 1,
-                          ),
+                    ),
+                    Center(
+                      child: Text(
+                        taskUser.priority,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFFFCFCFC),
+                          fontSize: 15,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.04,
+                          letterSpacing: 1,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(left: 10),
-              width: 200,
-              height: 90,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    taskUser.descripcion,
-                    style: const TextStyle(
-                      color: Color(0xFF222222),
-                      fontSize: 14,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    fechaFormateada,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF555555),
-                      fontSize: 13,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w500,
-                      height: 0.12,
-                    ),
-                  ),
-                ],
               ),
-            ),
+            ],
           ),
           Container(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-                onPressed: () {}, icon: const Icon(Icons.more_vert_outlined)),
-          )
+            width: double.infinity,
+            height: 70,
+            margin: const EdgeInsets.only(top: 15),
+            child: Text(
+              taskUser.descripcion,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Epilogue',
+                fontWeight: FontWeight.w700,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const Divider(),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.date_range),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      fechaFormateada,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFF555555),
+                        fontSize: 13,
+                        fontFamily: 'Epilogue',
+                        fontWeight: FontWeight.w500,
+                        height: 0.12,
+                      ),
+                    ),
+                  )
+                ],
+              ))
         ],
       ),
     );

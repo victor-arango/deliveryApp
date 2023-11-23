@@ -6,5 +6,5 @@ class UserMapper {
       email: json['email'],
       fullname: json['fullname'],
       roles: List<String>.from(json['roles'].map((role) => role)),
-      session_token: json['session_token']);
+      sessionToken: json['session_token']);
 }

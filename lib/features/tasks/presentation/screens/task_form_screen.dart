@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:build_context_provider/build_context_provider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
@@ -134,7 +136,7 @@ class widgetDate extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     DateTime today = DateTime.now();
-    DateTime yesterday = today.subtract(Duration(days: 1));
+    DateTime yesterday = today.subtract(const Duration(days: 1));
 
     return EasyDateTimeLine(
       locale: 'es',

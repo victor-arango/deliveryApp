@@ -73,7 +73,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void _setLoggedUser(User user) async {
-    await keyValueStorageService.setKeyValue('token', user.session_token);
+    await keyValueStorageService.setKeyValue('token', user.sessionToken);
     await keyValueStorageService.setKeyValue('idUser', user.id);
 
     state = state.copyWith(

@@ -23,8 +23,9 @@ class DropdowPriority extends FormzInput<String, DropdowPriorityError> {
   // Override validator to handle validating a given input value.
   @override
   DropdowPriorityError? validator(String value) {
-    if (value.isEmpty || value.trim().isEmpty)
+    if (value.isEmpty || value.trim().isEmpty) {
       return DropdowPriorityError.empty;
+    }
 
     return null;
   }

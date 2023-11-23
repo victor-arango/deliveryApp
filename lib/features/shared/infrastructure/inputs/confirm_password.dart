@@ -8,7 +8,7 @@ class ConfirmPassword
 
   const ConfirmPassword.pure({this.password = ''}) : super.pure('');
 
-  ConfirmPassword.dirty({required this.password, String value = ''})
+  const ConfirmPassword.dirty({required this.password, String value = ''})
       : super.dirty(value);
 
   @override

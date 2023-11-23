@@ -3,14 +3,14 @@ class User {
   final String fullname;
   final String email;
   final List<String> roles;
-  final String session_token;
+  final String sessionToken;
 
   User(
       {required this.id,
       required this.fullname,
       required this.email,
       required this.roles,
-      required this.session_token});
+      required this.sessionToken});
 
   bool get isAdmin {
     return roles.contains('admin');

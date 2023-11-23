@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: empty_catches
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mensaeria_alv/features/tasks/domain/entities/task_user.dart';
@@ -28,9 +28,7 @@ class TaskViewNotifier extends StateNotifier<TaskViewState> {
     try {
       final task = await taskUserRepository.getTaskById(state.id);
       state = state.copyWith(isLoading: false, task: task);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 }
 

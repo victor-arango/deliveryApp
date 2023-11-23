@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/tasks/domain/entities/task_user.dart';
@@ -28,6 +30,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
   Future<bool> createOrUpdateProduct(Map<String, dynamic> taskLike) async {
     try {
       final task = await taskUserRepository.updateTask(taskLike);
+
       final isTaskInList =
           state.tasksUser.any((element) => element.id == task.id);
 
@@ -44,6 +47,7 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
               .toList());
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
@@ -81,7 +85,7 @@ class TaskUserState {
     this.isLoading = false,
     this.tasksUser = const [],
     required this.userId,
-    this.status = 'FINALIZADO',
+    this.status = 'ASIGNADO',
   });
 
   TaskUserState copyWith({

@@ -13,8 +13,9 @@ class FullName extends FormzInput<String, FullNameError> {
   String? get errorMessage {
     if (isValid || isPure) return null;
 
-    if (displayError == FullNameError.empty)
+    if (displayError == FullNameError.empty) {
       return 'El campo de nombre completo es requerido';
+    }
 
     return null;
   }

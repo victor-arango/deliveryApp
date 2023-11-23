@@ -33,7 +33,13 @@ class TaskScreen extends ConsumerWidget {
         onPressed: () {
           if (taskState.task == null) return;
 
-          ref.read(formTaskProvider(taskState.task!).notifier).onFormSubmit();
+          ref
+              .read(formTaskProvider(taskState.task!).notifier)
+              .onFormSubmit()
+              .then((value) {
+            if (!value) return;
+            showSnackbar(context);
+          });
         },
         child: const Icon(Icons.save_as_outlined),
       ),

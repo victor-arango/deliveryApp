@@ -6,7 +6,7 @@ class TaskUser {
   String status;
   String timestamp;
   String priority;
-  Ratings ratings;
+  Ratings? ratings;
 
   TaskUser({
     required this.id,
@@ -16,7 +16,7 @@ class TaskUser {
     required this.status,
     required this.timestamp,
     required this.priority,
-    required this.ratings,
+    this.ratings,
   });
 
   map(Function(dynamic element) param0) {}

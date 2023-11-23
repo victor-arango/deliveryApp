@@ -45,13 +45,10 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
       'priority': state.priority.value,
     };
 
-    print(taskLike);
 
     try {
-      print('Actualizo');
       return await onSubmitCallback!(taskLike);
     } catch (e) {
-      print('Errore no controlado');
       return false;
     }
   }

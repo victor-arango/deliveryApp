@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -33,8 +35,8 @@ class TasksScreenState extends ConsumerState<TasksScreen>
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static List<Widget> _widgetOptions = <Widget>[
-    _ProductsView(),
-    TaskViewFinish()
+    const _ProductsView(),
+    const TaskViewFinish()
   ];
 
   @override

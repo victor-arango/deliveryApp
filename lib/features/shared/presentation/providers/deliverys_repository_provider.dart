@@ -5,7 +5,7 @@ import 'package:mensaeria_alv/features/shared/infrastructure/datasource/delivery
 import 'package:mensaeria_alv/features/shared/infrastructure/repositories/delivery_respository_impl.dart';
 
 final deliveryRepositoryProvider = Provider<DeliverysRepository>((ref) {
-  final accessToken = ref.watch(authProvider).user?.session_token ?? '';
+  final accessToken = ref.watch(authProvider).user?.sessionToken ?? '';
 
   final deliveryRepository = DeliveryRepositoryImpl(
       datasource: DeliveryDatasourceImpl(accessToken: accessToken));
