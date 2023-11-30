@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/shared/infrastructure/inputs/inputs.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.dart';
@@ -10,17 +11,18 @@ final formTaskProvider = StateNotifierProvider.autoDispose
     .family<FormTaskNotifier, FormTaskState, TaskUser>((ref, task) {
   final updateCallback =
       ref.watch(taskUSerProvider.notifier).createOrUpdateProduct;
+  final userState = ref.watch(authProvider);
 
   return FormTaskNotifier(
-    task: task,
-    onSubmitCallback: updateCallback,
-  );
+      task: task, onSubmitCallback: updateCallback, userState);
 });
 
 class FormTaskNotifier extends StateNotifier<FormTaskState> {
+  final AuthState userState;
   final Future<bool> Function(Map<String, dynamic> taskLike)? onSubmitCallback;
 
-  FormTaskNotifier({
+  FormTaskNotifier(
+    this.userState, {
     this.onSubmitCallback,
     required TaskUser task,
   }) : super(FormTaskState(
@@ -38,13 +40,13 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
     if (onSubmitCallback == null) return false;
 
     final taskLike = {
-      'id': state.id,
+      'id': (state.id == 'new') ? null : state.id,
+      'user_id': userState.user?.id,
       'descripcion': state.description.value,
       'timestamp': state.timestamp.value,
       'delivery_id': state.deliveryId.value,
       'priority': state.priority.value,
     };
-
 
     try {
       return await onSubmitCallback!(taskLike);

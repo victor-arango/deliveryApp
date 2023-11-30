@@ -11,12 +11,17 @@ class TaskUserRepositoryImpl extends TaskUserRepository {
   }
 
   @override
-  Future<List<TaskUser>> getTaskByIdAndStatus(int userId, String status) {
+  Future<List<TaskUser>> getTaskByIdAndStatus(String userId, String status) {
     return datasource.getTaskByIdAndStatus(userId, status);
   }
 
   @override
   Future<TaskUser> updateTask(Map<String, dynamic> taskLike) {
     return datasource.updateTask(taskLike);
+  }
+
+  @override
+  Future<TaskUser> updateRatingTask(Map<String, dynamic> taskLike) {
+    return datasource.updateRatingTask(taskLike);
   }
 }

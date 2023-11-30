@@ -12,7 +12,7 @@ final taskUSerProvider =
     StateNotifierProvider<TaskUserNotifier, TaskUserState>((ref) {
   final tasksUserRepository = ref.watch(taskUserRepositoyProvider);
   final idUser = ref.watch(authProvider).user?.id ?? '';
-  final userId = int.parse(idUser);
+  final userId = idUser;
 
   return TaskUserNotifier(
       taskUserRepository: tasksUserRepository, userId: userId);
@@ -22,7 +22,7 @@ final taskUSerProvider =
 class TaskUserNotifier extends StateNotifier<TaskUserState> {
   final TaskUserRepository taskUserRepository;
 
-  TaskUserNotifier({required this.taskUserRepository, required int userId})
+  TaskUserNotifier({required this.taskUserRepository, required String userId})
       : super(TaskUserState(userId: userId, status: 'ASIGNADO')) {
     loadTask();
   }
@@ -52,6 +52,14 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     }
   }
 
+  Future<bool> updateTaskFinish(Map<String, dynamic> taskLike) async {
+    try {
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future loadTask() async {
     if (state.isLoading || state.isLastPage) return;
 
@@ -77,7 +85,7 @@ class TaskUserState {
   final bool isLastPage;
   final bool isLoading;
   final List<TaskUser> tasksUser;
-  final int userId;
+  final String userId;
   final String status;
 
   TaskUserState({
@@ -92,7 +100,7 @@ class TaskUserState {
     bool? isLastPage,
     bool? isLoading,
     List<TaskUser>? tasksUser,
-    int? userId,
+    String? userId,
     String? status,
   }) =>
       TaskUserState(

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/task_view_screen.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/no_data_widget.dart';
 
 import '../providers/task_user_provider.dart';
 import 'widgets/task_card.dart';
@@ -91,7 +92,10 @@ class TasksScreenState extends ConsumerState<TasksScreen>
         floatingActionButton: FloatingActionButton.extended(
           label: const Text('Nueva Tarea'),
           icon: const Icon(Icons.add),
-          onPressed: () => context.push('/form-task'),
+          onPressed: () {
+            context.push('/task/new');
+          },
+          // onPressed: () => context.push('/form-task'),
         ),
       ),
     );
@@ -122,6 +126,13 @@ class _ProductsViewState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
     final tasksState = ref.watch(taskUSerProvider);
+
+    if (tasksState.tasksUser.isEmpty) {
+      return Center(
+        child: NoDataWidget(),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: MasonryGridView.count(

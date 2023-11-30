@@ -5,6 +5,7 @@ import 'package:mensaeria_alv/features/auth/auth.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/delivery/presentation/screens/delivery_screen.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/screens.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/screens/tasks_finish_screen.dart';
 
 final goRouterProvider = Provider((ref) {
   final goRouterNotifier = ref.read(goRouterNotifierProvider);
@@ -44,6 +45,12 @@ final goRouterProvider = Provider((ref) {
           taskId: state.params['id'] ?? 'no-id',
         ),
       ),
+      GoRoute(
+        path: '/taskFinish/:id',
+        builder: (context, state) => TaskFinishScreen(
+          taskId: state.params['id'] ?? 'no-id',
+        ),
+      ),
 
       ///* Delivery Routes
       GoRoute(
@@ -74,7 +81,8 @@ final goRouterProvider = Provider((ref) {
         if (user!.contains('admin')) {
           if (isGoingTo == '/' ||
               isGoingTo == '/form-task' ||
-              isGoingTo.contains('/task/')) {
+              isGoingTo.contains('/task/') ||
+              isGoingTo.contains('/taskFinish/')) {
             return null;
           }
           return '/';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/no_data_widget.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/task_card.dart';
 
 import '../providers/task_user_finish_provider.dart';
@@ -30,6 +31,11 @@ class TaskViewFinishState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
     final tasksState = ref.watch(taskUSerFinishProvider);
+    if (tasksState.tasksUserFin.isEmpty) {
+      return Center(
+        child: NoDataWidget(),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: MasonryGridView.count(
@@ -42,7 +48,7 @@ class TaskViewFinishState extends ConsumerState {
         itemBuilder: (context, index) {
           final task = tasksState.tasksUserFin[index];
           return GestureDetector(
-              onTap: () => context.push('/task/${task.id}'),
+              onTap: () => context.push('/taskFinish/${task.id}'),
               child: TaskCard(taskUser: task));
         },
       ),

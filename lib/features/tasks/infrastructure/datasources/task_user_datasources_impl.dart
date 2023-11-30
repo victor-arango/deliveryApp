@@ -29,9 +29,11 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
   }
 
   @override
-  Future<List<TaskUser>> getTaskByIdAndStatus(int userId, String status) async {
+  Future<List<TaskUser>> getTaskByIdAndStatus(
+      String userId, String status) async {
     final response =
         await dio.get<List>('/task/findByClientAndStatus/$userId/$status');
+
     final List<TaskUser> tasks = [];
     for (final task in response.data ?? []) {
       tasks.add(TaskUserMapper.jsonToEntity(task));
@@ -41,10 +43,32 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
 
   @override
   Future<TaskUser> updateTask(Map<String, dynamic> taskLike) async {
-    final String taskId = taskLike['id'];
     try {
-      final response = await dio.patch('/task/$taskId', data: taskLike);
+      final String? taskId = taskLike['id'];
+      final String method = (taskId == null) ? 'POST' : 'PATCH';
+      final String url = (taskId == null) ? '/task/create' : '/task/$taskId';
+
+      taskLike.remove('id');
+
+      final response = await dio.request(url,
+          data: taskLike, options: Options(method: method));
+
       final task = TaskUserMapper.jsonToEntity(response.data['data']);
+
+      return task;
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<TaskUser> updateRatingTask(Map<String, dynamic> taskLike) async {
+    try {
+      final String? taskId = taskLike['id'];
+
+      final response = await dio.patch('ratingUpdate/$taskId');
+      final task = TaskUserMapper.jsonToEntity(response.data);
+
       return task;
     } catch (e) {
       throw Exception();

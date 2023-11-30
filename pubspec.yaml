@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.1.0
+  flutter_emoji_feedback: ^0.1.2
   flutter_riverpod: ^2.4.3
   flutter_staggered_grid_view: ^0.7.0
   fluttertoast: ^8.2.2
@@ -23,6 +24,7 @@ dependencies:
   google_fonts: ^4.0.3
   google_nav_bar: ^5.0.6
   intl: ^0.18.1
+  lottie: ^2.7.0
   shared_preferences: ^2.2.2
   socket_io_client: ^2.0.3
 
@@ -36,6 +38,7 @@ flutter:
 
   assets:
     - .env
+    - assets/
     - assets/loaders/
     - assets/images/
     - google_fonts/montserrat_alternates/
