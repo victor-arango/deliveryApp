@@ -35,7 +35,7 @@ class TaskViewNotifier extends StateNotifier<TaskViewState> {
     return TaskUser(
         id: 'new',
         userId: userId!,
-        deliveryId: '8',
+        deliveryId: '',
         descripcion: '',
         status: '',
         timestamp: fecha.toString(),

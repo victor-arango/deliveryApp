@@ -22,6 +22,8 @@ class AuthDataSourceImpl extends AuthDataSource {
             'Authorization': 'Bearer $token'
           }));
 
+      print(response);
+
       final user = UserMapper.userJsonToEntity(response.data['data']);
       return user;
     } on DioException catch (e) {

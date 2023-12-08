@@ -65,8 +65,14 @@ class TaskUserDatasourceImpl extends TaskUserDatasource {
   Future<TaskUser> updateRatingTask(Map<String, dynamic> taskLike) async {
     try {
       final String? taskId = taskLike['id'];
+      final Map<String, dynamic>? ratings = taskLike['ratings'];
+      final int? rating = ratings?['rating'];
 
-      final response = await dio.patch('ratingUpdate/$taskId');
+      print(taskId);
+      print(rating);
+
+      final response =
+          await dio.patch('/task/updateTaskByIdAndStatus/$taskId/$rating');
       final task = TaskUserMapper.jsonToEntity(response.data);
 
       return task;

@@ -25,28 +25,28 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
     loadTask();
   }
 
-  Future<bool> createOrUpdateProduct(Map<String, dynamic> taskLike) async {
-    try {
-      final task = await taskUserRepository.updateTask(taskLike);
-      final isTaskInList =
-          state.tasksUserFin.any((element) => element.id == task.id);
+  // Future<bool> createOrUpdateProduct(Map<String, dynamic> taskLike) async {
+  //   try {
+  //     final task = await taskUserRepository.updateTask(taskLike);
+  //     final isTaskInList =
+  //         state.tasksUserFin.any((element) => element.id == task.id);
 
-      if (!isTaskInList) {
-        state = state.copyWith(tasksUserFin: [...state.tasksUserFin, task]);
-        return true;
-      }
+  //     if (!isTaskInList) {
+  //       state = state.copyWith(tasksUserFin: [...state.tasksUserFin, task]);
+  //       return true;
+  //     }
 
-      state = state.copyWith(
-          tasksUserFin: state.tasksUserFin
-              .map(
-                (element) => (element.id == task.id) ? task : element,
-              )
-              .toList());
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  //     state = state.copyWith(
+  //         tasksUserFin: state.tasksUserFin
+  //             .map(
+  //               (element) => (element.id == task.id) ? task : element,
+  //             )
+  //             .toList());
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future loadTask() async {
     if (state.isLoading || state.isLastPage) return;
@@ -65,6 +65,22 @@ class TaskUserNotifier extends StateNotifier<TaskUserState> {
         isLastPage: false,
         isLoading: false,
         tasksUserFin: [...state.tasksUserFin, ...tasks]);
+  }
+
+  Future<bool> deleteTask(Map<String, dynamic> taskLike) async {
+    try {
+      final task = await taskUserRepository.updateRatingTask(taskLike);
+
+      state = state.copyWith(
+        tasksUserFin: state.tasksUserFin
+            .where((element) => element.id != task.id)
+            .toList(),
+      );
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

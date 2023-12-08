@@ -6,3 +6,4 @@ export 'dropdown.dart';
 export 'description.dart';
 export 'dropdown_date.dart';
 export 'dropdown_priority.dart';
+export 'rating.dart';

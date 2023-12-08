@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/providers/form_task_provider%20copy.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/providers/task_finish_provider.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/task_card.dart';
 
@@ -16,6 +17,12 @@ class TaskFinishScreen extends ConsumerWidget {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Tarea Actualizada')));
+  }
+
+  void showSnackbarError(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No has calificado la tarea!')));
   }
 
   @override
@@ -72,9 +79,20 @@ class TaskFinishScreen extends ConsumerWidget {
         width: 200,
         height: 60,
         child: CustomFilledButton(
-            text: 'Finalizar Tarea!',
-            buttonColor: Colors.black,
-            onPressed: () {}),
+          text: 'Finalizar Tarea!',
+          buttonColor: Colors.black,
+          onPressed: () {
+            if (taskState.task == null) return;
+
+            ref
+                .read(formTaskFinishProvider(taskState.task!).notifier)
+                .onFormSubmit()
+                .then((value) {
+              if (!value) return;
+              showSnackbar(context);
+            });
+          },
+        ),
       ),
     );
   }
@@ -232,7 +250,9 @@ class _TaskForm extends ConsumerWidget {
               color: Colors.black, decoration: TextDecoration.none),
           inactiveElementScale: .7,
           onChanged: (value) {
-            print(value);
+            ref
+                .read(formTaskFinishProvider(task).notifier)
+                .onRatingChange(value);
           },
         ),
       ]),
