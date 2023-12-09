@@ -16,13 +16,17 @@ class TaskFinishScreen extends ConsumerWidget {
   void showSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Tarea Actualizada')));
+        .showSnackBar(const SnackBar(content: Text('Tarea Finalizada')));
   }
 
   void showSnackbarError(BuildContext context) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No has calificado la tarea!')));
+  }
+
+  void goBack(BuildContext context) {
+    context.pop();
   }
 
   @override
@@ -90,6 +94,7 @@ class TaskFinishScreen extends ConsumerWidget {
                 .then((value) {
               if (!value) return;
               showSnackbar(context);
+              goBack(context);
             });
           },
         ),
@@ -145,7 +150,7 @@ class _TaskForm extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Prioridad ${task.id}'),
+                  const Text('Prioridad'),
                   SizedBox(
                     width: 52,
                     height: 20,

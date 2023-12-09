@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:mensaeria_alv/config/utils/screen_size.dart';
 import 'package:lottie/lottie.dart';
