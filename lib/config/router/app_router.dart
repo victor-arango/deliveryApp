@@ -4,6 +4,7 @@ import 'package:mensaeria_alv/config/router/app_router_notifier.dart';
 import 'package:mensaeria_alv/features/auth/auth.dart';
 import 'package:mensaeria_alv/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mensaeria_alv/features/delivery/presentation/screens/delivery_screen.dart';
+import 'package:mensaeria_alv/features/delivery/presentation/screens/task_delivery_finish.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/screens.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/tasks_finish_screen.dart';
 
@@ -57,6 +58,13 @@ final goRouterProvider = Provider((ref) {
         path: '/delivery',
         builder: (context, state) => const DeliveryScreen(),
       ),
+
+      GoRoute(
+        path: '/taskFinishDelivery/:id',
+        builder: (context, state) => TaskFinishDeliveryScreen(
+          taskId: state.params['id'] ?? 'no-id',
+        ),
+      ),
     ],
     redirect: (context, state) async {
       final isGoingTo = state.subloc;
@@ -89,7 +97,8 @@ final goRouterProvider = Provider((ref) {
         }
 
         if (user.contains('delivery')) {
-          if (isGoingTo == '/delivery') {
+          if (isGoingTo == '/delivery' ||
+              isGoingTo.contains('/taskFinishDelivery/')) {
             return null;
           }
           return '/delivery';

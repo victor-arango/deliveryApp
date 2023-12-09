@@ -11,7 +11,8 @@ class TaskDeliveryRepositoryImpl extends TaskDeliveryRepository {
   }
 
   @override
-  Future<List<TaskDelivery>> getTaskById(String userId) {
-    return datasource.getTaskById(userId);
+  Future<List<TaskDelivery>> getTaskByIdAndStatus(
+      String userId, String status) {
+    return datasource.getTaskByIdAndStatus(userId, status);
   }
 }

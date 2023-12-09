@@ -19,9 +19,10 @@ class TaskDeliveryDatasourceImpl extends TaskDeliveryDatasource {
   }
 
   @override
-  Future<List<TaskDelivery>> getTaskById(String userId) async {
-    final response = await dio.get<List>('/task/findByClientAndStatus/$userId');
-
+  Future<List<TaskDelivery>> getTaskByIdAndStatus(
+      String userId, String status) async {
+    final response =
+        await dio.get<List>('/task/findByDeliveryAndStatus/$userId/$status');
     final List<TaskDelivery> tasks = [];
     for (final task in response.data ?? []) {
       tasks.add(TaskDeliveryMapper.jsonToEntity(task));

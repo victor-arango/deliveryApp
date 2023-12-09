@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_emoji_feedback/flutter_emoji_feedback.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +8,9 @@ import 'package:mensaeria_alv/features/tasks/presentation/providers/form_task_pr
 import 'package:mensaeria_alv/features/tasks/presentation/providers/task_finish_provider.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/task_card.dart';
 
-class TaskFinishScreen extends ConsumerWidget {
+class TaskFinishDeliveryScreen extends ConsumerWidget {
   final String taskId;
-  const TaskFinishScreen({super.key, required this.taskId});
+  const TaskFinishDeliveryScreen({super.key, required this.taskId});
 
   void showSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -126,8 +125,7 @@ class _TaskForm extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(children: [
         const SizedBox(height: 20),
-        Text('Califica esta tarea para finalizar',
-            style: textStyles.titleSmall),
+        Text('Cerrar tarea !', style: textStyles.titleSmall),
         const SizedBox(height: 70),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
@@ -227,32 +225,6 @@ class _TaskForm extends ConsumerWidget {
         ),
         const SizedBox(
           height: 30,
-        ),
-        EmojiFeedback(
-          customLabels: const [
-            'Terrible',
-            'Mal',
-            'Bien',
-            'Muy bien',
-            'Asombroso'
-          ],
-          emojiPreset: const [
-            EmojiModel(src: 'assets/classic_terrible.svg', label: 'terrible'),
-            EmojiModel(src: 'assets/classic_bad.svg', label: 'mal'),
-            EmojiModel(src: 'assets/classic_good.svg', label: 'bien'),
-            EmojiModel(src: 'assets/classic_very_good.svg', label: 'muy bien'),
-            EmojiModel(src: 'assets/classic_awesome.svg', label: 'bad'),
-          ],
-          animDuration: const Duration(milliseconds: 200),
-          curve: Curves.easeInQuad,
-          labelTextStyle: const TextStyle(
-              color: Colors.black, decoration: TextDecoration.none),
-          inactiveElementScale: .7,
-          onChanged: (value) {
-            ref
-                .read(formTaskFinishProvider(task).notifier)
-                .onRatingChange(value);
-          },
         ),
       ]),
     );
