@@ -43,6 +43,20 @@ class TaskDeliveryNotifier extends StateNotifier<TaskDeliveryState> {
     state = state.copyWith(
         isLoadTask: false, isLoading: false, tasks: [...state.tasks, ...tasks]);
   }
+
+  Future<bool> closeTask(Map<String, dynamic> taskLike) async {
+    try {
+      final task = await taskDeliveryRepository.finishTask(taskLike);
+
+      state = state.copyWith(
+        tasks: state.tasks.where((element) => element.id != task.id).toList(),
+      );
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 // STATE

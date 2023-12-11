@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:mensaeria_alv/features/delivery/presentation/providers/form_finish_task_delivery.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
-import 'package:mensaeria_alv/features/tasks/presentation/providers/form_task_provider%20copy.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/providers/task_finish_provider.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/task_card.dart';
+import 'package:material_dialogs/material_dialogs.dart';
 
 class TaskFinishDeliveryScreen extends ConsumerWidget {
   final String taskId;
@@ -78,18 +81,42 @@ class TaskFinishDeliveryScreen extends ConsumerWidget {
         child: CustomFilledButton(
           text: 'Finalizar Tarea!',
           buttonColor: Colors.black,
-          onPressed: () {
-            if (taskState.task == null) return;
-
-            ref
-                .read(formTaskFinishProvider(taskState.task!).notifier)
-                .onFormSubmit()
-                .then((value) {
-              if (!value) return;
-              showSnackbar(context);
-              goBack(context);
-            });
-          },
+          onPressed: () => Dialogs.materialDialog(
+              msg: 'Estas seguro de cerrar esta tarea ?',
+              title: "Cerrar tarea !",
+              color: Colors.white,
+              context: context,
+              dialogWidth: 250,
+              actions: [
+                IconsOutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(['Test', 'List']);
+                  },
+                  text: 'Cancelar',
+                  iconData: Icons.cancel_outlined,
+                  textStyle: const TextStyle(color: Colors.grey),
+                  iconColor: Colors.grey,
+                ),
+                IconsButton(
+                  onPressed: () {
+                    ref
+                        .read(formTaskDeliveryFinishProvider(taskState.task!)
+                            .notifier)
+                        .onFormSubmit()
+                        .then((value) {
+                      if (!value) return;
+                      showSnackbar(context);
+                      goBack(context);
+                      goBack(context);
+                    });
+                  },
+                  text: "Cerrar",
+                  iconData: Icons.delete,
+                  color: Colors.red,
+                  textStyle: const TextStyle(color: Colors.white),
+                  iconColor: Colors.white,
+                ),
+              ]),
         ),
       ),
     );

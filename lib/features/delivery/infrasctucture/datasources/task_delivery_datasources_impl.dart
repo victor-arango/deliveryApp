@@ -13,9 +13,19 @@ class TaskDeliveryDatasourceImpl extends TaskDeliveryDatasource {
             headers: {'Authorization': 'Bearer $accestoken'}));
 
   @override
-  Future<TaskDelivery> finishTask(Map<String, dynamic> taskLike) {
-    // TODO: implement finishTask
-    throw UnimplementedError();
+  Future<TaskDelivery> finishTask(Map<String, dynamic> taskLike) async {
+    try {
+      final String? taskId = taskLike['id'];
+
+      final response = await dio.patch('/task/updateFinishTaskById/$taskId');
+      final task = TaskDeliveryMapper.jsonToEntity(response.data['data']);
+
+      return task;
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+      throw Exception();
+    }
   }
 
   @override

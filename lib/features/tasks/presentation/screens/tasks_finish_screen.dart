@@ -112,6 +112,7 @@ class _TaskForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textStyles = Theme.of(context).textTheme;
     String fechaString = task.timestamp;
+    final formNotifier = ref.watch(formTaskFinishProvider(task).notifier);
 
     // Parsear la fecha a un objeto DateTime
     DateTime fecha = DateTime.parse(fechaString);
@@ -249,9 +250,7 @@ class _TaskForm extends ConsumerWidget {
               color: Colors.black, decoration: TextDecoration.none),
           inactiveElementScale: .7,
           onChanged: (value) {
-            ref
-                .read(formTaskFinishProvider(task).notifier)
-                .onRatingChange(value);
+            formNotifier.onRatingChange(value);
           },
         ),
       ]),

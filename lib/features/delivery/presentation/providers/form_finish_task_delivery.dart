@@ -1,15 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:formz/formz.dart';
-import 'package:mensaeria_alv/features/shared/infrastructure/inputs/inputs.dart';
+import 'package:mensaeria_alv/features/delivery/presentation/providers/tasks_delivery_provider.dart';
 import 'package:mensaeria_alv/features/tasks/domain/entities/task_user.dart';
-
-import 'task_user_finish_provider.dart';
 
 //PROVIDER
 
-final formTaskFinishProvider = StateNotifierProvider.autoDispose
+final formTaskDeliveryFinishProvider = StateNotifierProvider.autoDispose
     .family<FormTaskNotifier, FormTaskState, TaskUser>((ref, task) {
-  final updateCallback = ref.watch(taskUSerFinishProvider.notifier).deleteTask;
+  final updateCallback = ref.watch(taskDeliverysProvider.notifier).closeTask;
 
   return FormTaskNotifier(task: task, onSubmitCallback: updateCallback);
 });
@@ -21,25 +18,16 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
     this.onSubmitCallback,
     required TaskUser task,
   }) : super(FormTaskState(
-            id: task.id,
-            userId: task.userId,
-            deliveryId: task.deliveryId,
-            descripcion: task.descripcion,
-            status: task.status,
-            timestamp: task.timestamp,
-            priority: task.priority,
-            rating: Rating.dirty(task.ratings!.rating)));
+          id: task.id,
+          userId: task.userId,
+          deliveryId: task.deliveryId,
+          descripcion: task.descripcion,
+          status: task.status,
+          timestamp: task.timestamp,
+          priority: task.priority,
+        ));
 
   Future<bool> onFormSubmit() async {
-    _touchedEverything();
-    print(state.rating);
-    print(state.isFormValid);
-    print(onSubmitCallback);
-
-    if (!state.isFormValid) return false;
-
-    if (onSubmitCallback == null) return false;
-
     final taskLike = {
       'id': (state.id == 'new') ? null : state.id,
       'userId': state.userId,
@@ -48,11 +36,6 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
       'status': state.status,
       'timestamp': state.timestamp,
       'priority': state.priority,
-      'ratings': {
-        'taskId': state.id,
-        'deliveryId': state.deliveryId,
-        'rating': state.rating.value,
-      }
     };
 
     try {
@@ -61,28 +44,12 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
       return false;
     }
   }
-
-  void _touchedEverything() {
-    state = state.copyWith(
-      isFormValid: Formz.validate([
-        Rating.dirty(state.rating.value),
-      ]),
-    );
-  }
-
-  void onRatingChange(int value) {
-    state = state.copyWith(
-        rating: Rating.dirty(value),
-        isFormValid: Formz.validate([
-          Rating.dirty(value),
-        ]));
-  }
 }
 
 //STATE
 
 class FormTaskState {
-  final bool isFormValid;
+  final bool isFormvValid;
   final String? id;
   final String? userId;
   final String? deliveryId;
@@ -90,10 +57,9 @@ class FormTaskState {
   final String? status;
   final String? timestamp;
   final String? priority;
-  final Rating rating;
 
   FormTaskState({
-    this.isFormValid = false,
+    this.isFormvValid = false,
     this.id,
     this.userId,
     this.deliveryId,
@@ -101,11 +67,10 @@ class FormTaskState {
     this.status,
     this.timestamp,
     this.priority,
-    this.rating = const Rating.dirty(0),
   });
 
   FormTaskState copyWith({
-    bool? isFormValid,
+    bool? isFormvValid,
     String? id,
     String? userId,
     String? deliveryId,
@@ -113,10 +78,9 @@ class FormTaskState {
     String? status,
     String? timestamp,
     String? priority,
-    Rating? rating,
   }) =>
       FormTaskState(
-        isFormValid: isFormValid ?? this.isFormValid,
+        isFormvValid: isFormvValid ?? this.isFormvValid,
         id: id ?? this.id,
         userId: userId ?? this.userId,
         deliveryId: this.deliveryId ?? this.deliveryId,
@@ -124,6 +88,5 @@ class FormTaskState {
         status: this.status ?? this.status,
         timestamp: this.timestamp ?? this.timestamp,
         priority: this.priority ?? this.priority,
-        rating: rating ?? this.rating,
       );
 }
