@@ -19,7 +19,7 @@ class TaskDeliveryCard extends StatelessWidget {
     // Formatear la fecha en el formato deseado
     String fechaFormateada = dateFormat.format(fecha);
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       height: 200,
       decoration: ShapeDecoration(

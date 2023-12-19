@@ -4,6 +4,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/delivery/presentation/providers/tasks_delivery_provider.dart';
 import 'package:mensaeria_alv/features/delivery/presentation/screens/widgets/task_delivery_card.dart';
+import 'package:mensaeria_alv/features/tasks/presentation/screens/widgets/no_data_widget.dart';
+
 import 'package:mensaeria_alv/features/shared/shared.dart';
 
 class DeliveryScreen extends StatelessWidget {
@@ -40,8 +42,14 @@ class _ProductsViewState extends ConsumerState {
   Widget build(BuildContext context) {
     final taskDeliveryState = ref.watch(taskDeliverysProvider);
 
+    if (taskDeliveryState.tasks.isEmpty) {
+      return Center(
+        child: NoDataWidget(),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
       child: MasonryGridView.count(
         controller: scrollcontroller,
         physics: const BouncingScrollPhysics(),

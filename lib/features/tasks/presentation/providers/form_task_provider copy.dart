@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:mensaeria_alv/features/shared/infrastructure/inputs/inputs.dart';
@@ -32,9 +33,6 @@ class FormTaskNotifier extends StateNotifier<FormTaskState> {
 
   Future<bool> onFormSubmit() async {
     _touchedEverything();
-    print(state.rating);
-    print(state.isFormValid);
-    print(onSubmitCallback);
 
     if (!state.isFormValid) return false;
 
