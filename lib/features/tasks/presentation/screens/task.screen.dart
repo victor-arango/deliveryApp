@@ -1,7 +1,9 @@
+import 'package:build_context_provider/build_context_provider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mensaeria_alv/features/shared/shared.dart';
 import 'package:mensaeria_alv/features/tasks/domain/domain.dart';
 import 'package:mensaeria_alv/features/tasks/presentation/providers/providers.dart';
@@ -21,14 +23,56 @@ class TaskScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskState = ref.watch(taskViewProvider(taskId));
+    final size = MediaQuery.of(context).size;
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final textStyles = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Editar tarea')),
-      ),
-      body: taskState.isLoading
-          ? const FullScreenLoader()
-          : _ProductView(task: taskState.task!),
+      body: GeometricalBackground(
+          child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 80),
+            const ListenerThatRunsFunctionsWithBuildContext(),
+            // Icon Banner
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      if (!context.canPop()) return;
+                      context.pop();
+                    },
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        size: 40, color: Colors.white)),
+                const Spacer(flex: 1),
+                Text(
+                  taskState.id == 'new' ? 'Crear Tarea' : 'Actualizar Tarea',
+                  style: textStyles.titleLarge?.copyWith(color: Colors.white),
+                ),
+                const Spacer(flex: 2),
+              ],
+            ),
+
+            const SizedBox(height: 50),
+
+            Container(
+              height: size.height - 260, // 80 los dos sizebox y 100 el ícono
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: scaffoldBackgroundColor,
+                borderRadius:
+                    const BorderRadius.only(topLeft: Radius.circular(100)),
+              ),
+              child: taskState.isLoading
+                  ? const FullScreenLoader()
+                  : _ProductView(task: taskState.task!),
+            ),
+          ],
+        ),
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (taskState.task == null) return;
@@ -59,7 +103,7 @@ class _ProductView extends ConsumerWidget {
       child: ListView(
         children: [
           const SizedBox(
-            height: 250,
+            height: 70,
             width: 600,
           ),
           const SizedBox(height: 10),
